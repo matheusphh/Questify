@@ -1,7 +1,23 @@
-import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { defineConfig } from 'vite';
 
-// https://vite.dev/config/
+const frontendRoot = dirname(fileURLToPath(import.meta.url));
+
 export default defineConfig({
-  plugins: [react()],
-})
+  server: {
+    proxy: {
+      '/api': 'http://127.0.0.1:8000',
+    },
+  },
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        login: resolve(frontendRoot, 'index.html'),
+        register: resolve(frontendRoot, 'register.html'),
+      },
+    },
+  },
+});
